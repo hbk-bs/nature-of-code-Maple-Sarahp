@@ -28,7 +28,33 @@
 
 			h1 {
 				font-size: 4em;
+				margin: 0;
+				text-align: center;
+				color: #333;
+			    word-spacing: 0.4em;
 			}
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+
+			margin: 2em 0;
+
+		}
+        .img-container{
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+		}
+		img {
+			width: 100%;
+			max-width: 400px;
+			height: auto;
+			margin: 1em;
 		}
 	</style>
 </head>
@@ -36,11 +62,27 @@
 <body>
 	<main>
 		<h1>The Code Of Nature</h1>
-
-		<ul>
+		<div class="container">
+			<p>Welcome to the Code of Nature, a collection of interactive projects that explore the intersection of
+				nature and technology. Each project is designed to inspire curiosity and creativity, inviting you to
+				engage with the natural world in new and exciting ways.</p>
+			<p>Click on any of the projects below to start your journey!</p>
 			<li><a href="./branch/branch2.html">Branch</a></li>
+			<div class="img-container">
+				<img src="./pics/01_1747086636542.jpg" alt="smth">
+				<img src="./pics/01_1747086636542.jpg" alt="smth">
+			</div>
+		</div>
+
+		<div class="container">
+			<p>These projects are built using HTML, CSS, and JavaScript, and are designed to be accessible to anyone
+				with a web browser. Whether you're a seasoned developer or just starting out, we hope you find
+				inspiration in these projects and feel empowered to create your own.</p>
+			<p>Thank you for visiting the Code of Nature. We hope you enjoy exploring these projects as much as we
+				enjoyed creating them!</p>
 			<li><a href="./letitgrow/grow.html">Let It Grow</a></li>
-		</ul>
+		</div>
+
 
 	</main>
 
