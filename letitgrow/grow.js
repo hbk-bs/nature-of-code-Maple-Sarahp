@@ -3,8 +3,8 @@
         let branches = [];
         let trunk;
         const maxGenerations = 6; // How many times branches can split
-        const branchProb = 0.05; // Erhöhte Wahrscheinlichkeit für Verzweigungen
-        const branchAngleMax = p.radians(40); // Größerer maximaler Verzweigungswinkel
+        const branchProb = 0.08; // Erhöhte Wahrscheinlichkeit für Verzweigungen
+        const branchAngleMax = p.radians(30); // Größerer maximaler Verzweigungswinkel
         const branchAngleMin = p.radians(15); // Kleinerer minimaler Verzweigungswinkel
 
         class Branch {
@@ -60,7 +60,7 @@
 
                 // Draw the line segment for this step
                 p.strokeWeight(this.strokeW);
-                p.stroke(50, 30, 0, 140); // Brownish color for branches
+                p.stroke(50, 30, 0, 130); // Brownish color for branches
                 p.line(this.pos.x, this.pos.y, nextPos.x, nextPos.y);
 
                 // Update the position for the next frame
