@@ -34,5 +34,5 @@ align-items: flex-end;
 <main>
 <div id="sketch"></div>
 <script src="lib/p5.min.js"></script>
-<script src="grow.js"></script>
+<script src="branch.js"></script>
 </main>
