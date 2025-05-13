@@ -10,13 +10,9 @@
 
 	<style>
 		body {
-
-			
-
 			font-family: sans-serif;
-			max-width: 800px;
-			margin: 2em auto;
-			padding: 0 1em;
+			max-width: 900px;
+			padding: 3em;
 		}
 
 		main {
@@ -27,10 +23,21 @@
 
 		h1 {
 			font-size: 4em;
+			font-weight: 300;
+			margin: 0;
+			margin-bottom: 0.2em;
+			text-align: center;
+			color: #333;
+			word-spacing: 0.4em;
+		}
+
+		h2 {
+			font-size: 2em;
 			margin: 0;
 			text-align: center;
 			color: #333;
 			word-spacing: 0.4em;
+			margin-bottom: 1em;
 		}
 
 		.container {
@@ -42,8 +49,24 @@
 			margin: 2em 0;
 			list-style: none;
 
+			a {
+				color: #3245f6;
+				font-size: 1em;
+				font-weight: 300;
+				padding: 0.5em 1em;
+				border-radius: 0.5em;
+				background-color: #f0f0f0;
+			}
+
 			a:hover {
 				text-decoration: none;
+				color: #22ae5a;
+			}
+
+			p {
+				text-align: center;
+				margin: 0.5em 0;
+				margin-bottom: 1em;
 			}
 
 		}
@@ -55,11 +78,30 @@
 			align-items: center;
 		}
 
+		#mini {
+            display: flex;
+			flex-direction:row;
+			justify-content:space-around;
+			p{
+				padding-top: 4em;
+			}
+			img {
+				width: 100%;
+				max-width: 190px;
+				height: auto;
+				margin: 0.2em;
+				margin-top: 2em;
+				border-radius: 0.5em;
+			}
+		}
+
 		img {
 			width: 100%;
 			max-width: 400px;
 			height: auto;
-			margin: 1em;
+			margin: 0.2em;
+			margin-top: 2em;
+			border-radius: 0.5em;
 		}
 	</style>
 </head>
@@ -67,11 +109,13 @@
 <body>
 	<main>
 		<h1>The Code Of Nature</h1>
+		<h2>Branching of Small Bushes</h2>
 		<div class="container">
-			<p>Welcome to the Code of Nature, a collection of interactive projects that explore the intersection of
-				nature and technology. Each project is designed to inspire curiosity and creativity, inviting you to
-				engage with the natural world in new and exciting ways.</p>
-			<p>Click on any of the projects below to start your journey!</p>
+			<p>!noch nix fertig! Welcome to the Code of Nature where inspiration was found on Amrum, North Frisia.</p>
+			<p>How can we put movement from nature into code? My attention, first focused
+				on the movement of waves, was quickly drawn to small bushes all over the island. From my window I saw
+				nothing but them and therefore, thinking of the project, I wanted to know more about this growing
+				process. This branching. </p>
 			<li><a href="./branch/branch2.html">Branch</a></li>
 			<div class="img-container">
 				<img src="./pics/03_1747086636562.jpg" alt="busch hehehe">
@@ -80,19 +124,21 @@
 		</div>
 
 		<div class="container">
-			<p>These projects are built using HTML, CSS, and JavaScript, and are designed to be accessible to anyone
-				with a web browser. Whether you're a seasoned developer or just starting out, we hope you find
-				inspiration in these projects and feel empowered to create your own.</p>
-			<p>Thank you for visiting the Code of Nature. We hope you enjoy exploring these projects as much as we
-				enjoyed creating them!</p>
+			<p>With a foundational code I experimented and tried to match the real bush from my photos. But to get more
+				abtract I </p>
+
 			<li><a href="./letitgrow/grow.html">Let It Grow</a></li>
 			<div class="img-container">
 				<img src="./pics/01_1747086636542.jpg" alt="busch hehhe">
-				<img src="./pics/02_1747086636552.jpg" alt="smth">
-
+				<img src="./pics/bush1.png" alt="smth">
 			</div>
-		</div>
 
+
+		</div>
+		<div id="mini">
+			<p>That's it! Thank you for looking through this stuff.</p>
+			<img src="https://i.pinimg.com/736x/73/2d/9b/732d9b8db48a53bc901b2350676e85fd.jpg" alt="yuhu">
+		</div>
 
 	</main>
 
