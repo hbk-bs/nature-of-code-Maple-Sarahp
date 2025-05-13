@@ -11,14 +11,14 @@
 	<style>
 		body {
 			font-family: sans-serif;
-			max-width: 900px;
+
 			padding: 3em;
 		}
 
 		main {
 			display: flex;
 			flex-direction: column;
-			align-items: flex-end;
+			align-items: center;
 		}
 
 		h1 {
@@ -26,7 +26,6 @@
 			font-weight: 300;
 			margin: 0;
 			margin-bottom: 0.2em;
-			text-align: center;
 			color: #333;
 			word-spacing: 0.4em;
 		}
@@ -34,10 +33,14 @@
 		h2 {
 			font-size: 2em;
 			margin: 0;
-			text-align: center;
 			color: #333;
 			word-spacing: 0.4em;
 			margin-bottom: 1em;
+		}
+
+		.headline {
+			align-self: flex-start;
+			text-align: left;
 		}
 
 		.container {
@@ -79,12 +82,14 @@
 		}
 
 		#mini {
-            display: flex;
-			flex-direction:row;
-			justify-content:space-around;
-			p{
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+
+			p {
 				padding-top: 4em;
 			}
+
 			img {
 				width: 100%;
 				max-width: 190px;
@@ -108,8 +113,11 @@
 
 <body>
 	<main>
-		<h1>The Code Of Nature</h1>
-		<h2>Branching of Small Bushes</h2>
+		<div class="headline">
+			<h1>The Code Of Nature</h1>
+			<h2>Branching of Small Bushes</h2>
+		</div>
+
 		<div class="container">
 			<p>!noch nix fertig! Welcome to the Code of Nature where inspiration was found on Amrum, North Frisia.</p>
 			<p>How can we put movement from nature into code? My attention, first focused
