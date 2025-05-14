@@ -2,7 +2,7 @@
     const s = (p) => {
         let branches = [];
         let trunk;
-        const maxGenerations = 6; // How many times branches can split
+        const maxGenerations = 14; // How many times branches can split
         const branchProb = 0.08; // Erhöhte Wahrscheinlichkeit für Verzweigungen
         const branchAngleMax = p.radians(30); // Größerer maximaler Verzweigungswinkel
         const branchAngleMin = p.radians(15); // Kleinerer minimaler Verzweigungswinkel
@@ -14,21 +14,35 @@
                 this.dir = dir.copy(); // p5.Vector direction
                 this.generation = generation; // How many splits led to this branch
                 this.len = p.random(5, 10); // Length of each segment (adjusted for bush)
-                this.strokeW = p.map(this.generation, 0, maxGenerations, 5, 1); // Stroke weight
+
+                // Dünnere Äste ab Generation 4
+                if (this.generation >= 4) {
+                    this.strokeW = p.map(this.generation, 4, maxGenerations, 2, 0.5);
+                } else {
+                    this.strokeW = p.map(this.generation, 0, 4, 5, 2);
+                }
+
                 this.growthDelay = this.generation < 2 ? p.floor(p.random(10, 30)) : 0; // Delay for early generations
             }
 
             // Creates a new branch instance
             branch(angleSign) {
-                if (this.generation >= maxGenerations) return null; // Stop branching if max generations reached
+                if (this.generation >= maxGenerations) return null;
 
-                let angle = p.random(branchAngleMin, branchAngleMax) * angleSign;
+                let angle;
                 let newDir = this.dir.copy();
-                newDir.rotate(angle); // Rotate the direction vector
 
-                // Prevent branches from growing downward
-                if (newDir.y > 0) {
-                    newDir.y = -newDir.y; // Flip the direction to ensure it doesn't point downward
+                if (this.generation >= 4) {
+                    // Äste ab Generation 5 nach unten hängen lassen
+                    angle = p.random(p.radians(30), p.radians(130)) * angleSign;
+                    newDir = p.createVector(0,8); // Basisrichtung nach unten
+                    newDir.rotate(angle);
+                } else {
+                    // Normales Verhalten für jüngere Generationen
+                    angle = p.random(branchAngleMin, branchAngleMax) * angleSign;
+                    newDir.rotate(angle);
+                    // Verhindere nach unten wachsende Äste
+                    if (newDir.y > 0) newDir.y = -newDir.y;
                 }
 
                 return new Branch(this, this.pos, newDir, this.generation + 1);
@@ -79,7 +93,7 @@
         p.setup = () => {
             p.createCanvas(700, 700); // Canvas size
             p.background(255);
-            p.stroke(50, 30, 0, 140); // Brownish color for branches
+            p.stroke(80, 30, 0, 140); // Brownish color for branches
 
             resetSketch(); // Initialize the branches
         };
