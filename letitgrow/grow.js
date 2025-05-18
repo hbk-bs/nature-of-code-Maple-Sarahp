@@ -163,6 +163,9 @@
 
             branches.push(newBranch); // Füge den neuen Branch zur Liste hinzu
         };
+        p.mousePressed = () => {
+            resetSketch();
+        };
     };
 
     new p5(s, 'branching-substrate');
