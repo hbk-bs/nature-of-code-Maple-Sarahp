@@ -18,6 +18,7 @@ let growthQueue = [
     angle: -Math.PI / 2,
     depth: 0
   }
+
 ];
 
 function growStep() {
@@ -58,6 +59,8 @@ function growStep() {
   });
 
   return true;
+
+   
 }
 
 function animateGrowth() {
