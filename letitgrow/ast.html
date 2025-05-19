@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Wachsender Busch</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <canvas id="buschCanvas"></canvas>
+        <script src="script.js"></script>
+    </main>
+
+    <script>
+        const path = window.location.pathname;
+        console.log(path);
+        const folders = path.split("/").filter((p) => p !== "");
+        document.title = folders[folders.length - 1];
+    </script>
+</body>
+
+</html>

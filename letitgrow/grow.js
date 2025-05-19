@@ -2,82 +2,88 @@
     const s = (p) => {
         let branches = [];
         let trunk;
-        const maxGenerations = 14; // How many times branches can split
-        const branchProb = 0.08; // Erhöhte Wahrscheinlichkeit für Verzweigungen
-        const branchAngleMax = p.radians(30); // Größerer maximaler Verzweigungswinkel
-        const branchAngleMin = p.radians(15); // Kleinerer minimaler Verzweigungswinkel
+        const maxGenerations = 12; // Angepasst
+        const initialBranchProb = 0.01; // Sehr geringe anfängliche Verzweigungswahrscheinlichkeit
+        const laterBranchProb = 0.05; // Erhöhte Wahrscheinlichkeit für spätere Verzweigungen
+        const branchAngleMax = p.radians(35);
+        const branchAngleMin = p.radians(10);
+        const initialCurveFactor = 0.005; // Faktor für die anfängliche Kurve des Hauptastes
 
         class Branch {
             constructor(parent, pos, dir, generation) {
-                this.parent = parent; // Keep track of parent if needed, null for trunk
-                this.pos = pos.copy(); // p5.Vector position
-                this.dir = dir.copy(); // p5.Vector direction
-                this.generation = generation; // How many splits led to this branch
-                this.len = p.random(5, 10); // Length of each segment (adjusted for bush)
+                this.parent = parent;
+                this.pos = pos.copy();
+                this.dir = dir.copy();
+                this.generation = generation;
+                this.curveOffset = p.random(-initialCurveFactor, initialCurveFactor); // Zufällige anfängliche Kurve
 
-                // Dünnere Äste ab Generation 4
                 if (this.generation >= 4) {
+                    this.len = p.random(5, 8); // Begrenzte Länge für grüne Äste
                     this.strokeW = p.map(this.generation, 4, maxGenerations, 2, 0.5);
+                    this.color = [34, 139, 34, 200]; // grün
+                    this.dir = p.createVector(0, 1); // Tendenz nach unten für grüne Äste
                 } else {
+                    this.len = p.random(8, 15); // Längere braune Äste
                     this.strokeW = p.map(this.generation, 0, 4, 5, 2);
+                    this.color = [80, 30, 0, 140]; // braun
                 }
 
-                this.growthDelay = this.generation < 2 ? p.floor(p.random(10, 30)) : 0; // Delay for early generations
+                this.growthDelay = this.generation < 2 ? p.floor(p.random(20, 50)) : 0;
             }
 
-            // Creates a new branch instance
             branch(angleSign) {
                 if (this.generation >= maxGenerations) return null;
-
-                let angle;
-                let newDir = this.dir.copy();
+                let angle, newDir = this.dir.copy();
 
                 if (this.generation >= 4) {
-                    // Äste ab Generation 5 nach unten hängen lassen
-                    angle = p.random(p.radians(30), p.radians(130)) * angleSign;
-                    newDir = p.createVector(0,8); // Basisrichtung nach unten
-                    newDir.rotate(angle);
+                    newDir = p.createVector(0, 1).rotate(p.random(-p.PI / 6, p.PI / 6)); // Leichte seitliche Variation für grüne Äste
                 } else {
-                    // Normales Verhalten für jüngere Generationen
                     angle = p.random(branchAngleMin, branchAngleMax) * angleSign;
                     newDir.rotate(angle);
-                    // Verhindere nach unten wachsende Äste
-                    if (newDir.y > 0) newDir.y = -newDir.y;
+                    // Tendenz zur Seite beibehalten
+                    if (this.parent && this.parent.dir.x !== 0) {
+                        newDir.x += this.parent.dir.x * 0.3;
+                        newDir.normalize();
+                    }
+                    if (newDir.y > 0) newDir.y = -newDir.y; // Immer noch tendenziell nach oben/außen
                 }
-
                 return new Branch(this, this.pos, newDir, this.generation + 1);
             }
 
-            // Grows the branch one step
             grow() {
-                // Apply delay for early generations
                 if (this.growthDelay > 0) {
                     this.growthDelay--;
-                    return true; // Skip growth for this frame
+                    return true;
+                }
+                if (this.generation >= maxGenerations) return false;
+
+                // Sanfte Kurve für den Hauptast und frühe Generationen
+                if (this.generation < 3) {
+                    let curve = p.noise(this.pos.x * 0.01, this.pos.y * 0.01) * 0.01 + this.curveOffset;
+                    this.dir.rotate(curve);
+                }
+                // Organisches Wackeln für braune Äste
+                else if (this.generation < 4) {
+                    let angleWobble =
+                        p.noise(this.pos.x * 0.9, this.pos.y * 0.01, p.frameCount * 0.005) *
+                        p.PI * 0.01 - p.PI * 0.005;
+                    this.dir.rotate(angleWobble + p.random(-0.05, 0.05));
+                }
+                // Leichte Kurve für grüne Äste (ab Generation 4)
+                else {
+                    let curve =
+                        p.noise(this.pos.x * 0.05, this.pos.y * 0.05, p.frameCount * 0.01 + this.generation) *
+                        0.1 - 0.05;
+                    this.dir.rotate(curve);
                 }
 
-                if (this.generation >= maxGenerations) {
-                    return false; // Stop growing
-                }
-
-                // Slight organic wobble
-                let angleWobble =
-                    p.noise(this.pos.x * 0.9, this.pos.y * 0.01, p.frameCount * 0.005) *
-                    p.PI *
-                    0.02 -
-                    p.PI * 0.01;
-                this.dir.rotate(angleWobble + p.random(-0.1, 0.1)); // Increased random wobble for bush
-
-                // Calculate the next position
                 let growthStep = this.dir.copy().setMag(this.len);
                 let nextPos = p5.Vector.add(this.pos, growthStep);
 
-                // Draw the line segment for this step
                 p.strokeWeight(this.strokeW);
-                p.stroke(50, 30, 0, 130); // Brownish color for branches
+                p.stroke(...this.color);
                 p.line(this.pos.x, this.pos.y, nextPos.x, nextPos.y);
 
-                // Update the position for the next frame
                 this.pos = nextPos;
 
                 return !(
@@ -89,49 +95,43 @@
             }
         }
 
-        // Setup and draw functions
         p.setup = () => {
-            p.createCanvas(700, 700); // Canvas size
-            p.background(255);
-            p.stroke(80, 30, 0, 140); // Brownish color for branches
-
-            resetSketch(); // Initialize the branches
+            p.createCanvas(800, 800);
+            p.background(240); // Hellerer Hintergrund
+            resetSketch();
         };
 
         const resetSketch = () => {
-            branches = []; // Clear existing branches
-            let startPos = p.createVector(p.width / 2, p.height); // Start at the bottom center
-            let initialDir = p.createVector(0, -1); // Grow upwards initially
+            branches = [];
+            let startPos = p.createVector(p.width / 2, p.height * 0.9); // Start etwas höher
+            let initialDir = p.createVector(0.1, -1).normalize(); // Leichte Neigung nach rechts oben
             trunk = new Branch(null, startPos, initialDir, 0);
-            branches.push(trunk); // Add trunk to the list
-            p.background(255); // Clear canvas on reset
-            p.loop(); // Ensure the loop is running
+            branches.push(trunk);
+            p.background(240);
+            p.loop();
         };
 
         p.draw = () => {
-            let newBranches = []; // Temporäres Array für neue Branches
+            let newBranches = [];
 
-            // Iteriere rückwärts durch die Branches
             for (let i = branches.length - 1; i >= 0; i--) {
                 let branch = branches[i];
-                let stillOnScreen = branch.grow(); // Wachse den Branch und prüfe, ob er sichtbar bleibt
+                let stillOnScreen = branch.grow();
 
                 if (!stillOnScreen) {
-                    branches.splice(i, 1); // Entferne Branch, wenn er außerhalb des Bildschirms ist
+                    branches.splice(i, 1);
                     continue;
                 }
 
-                // Prüfe, ob sich dieser Branch verzweigen soll
-                if (p.random(1) < branchProb && branch.generation < maxGenerations) {
-                    // Zufällige Richtung für die Verzweigung
-                    let angleSign = p.random(1) < 0.5 ? 1 : -1;
-                    let newB = branch.branch(angleSign); // Erstelle neuen Branch
-                    if (newB) {
-                        newBranches.push(newB); // Füge neuen Branch hinzu
-                    }
+                let currentBranchProb = branch.generation < 2 ? initialBranchProb : laterBranchProb;
 
-                    // Optional: Zweite Verzweigung in die entgegengesetzte Richtung
-                    if (p.random(1) < 0.4) { // 40% Chance für eine zweite Verzweigung
+                if (p.random(1) < currentBranchProb && branch.generation < maxGenerations) {
+                    let angleSign = p.random(1) < 0.5 ? 1 : -1;
+                    let newB = branch.branch(angleSign);
+                    if (newB) {
+                        newBranches.push(newB);
+                    }
+                    if (p.random(1) < 0.3) {
                         let newB2 = branch.branch(-angleSign);
                         if (newB2) {
                             newBranches.push(newB2);
@@ -140,13 +140,11 @@
                 }
             }
 
-            // Füge alle neuen Branches zur Hauptliste hinzu
             branches = branches.concat(newBranches);
 
-            // Sicherheitschecks, um die Simulation zu stoppen
             if (branches.length === 0) {
                 console.log('Simulation abgeschlossen: Keine Branches mehr.');
-                p.noLoop(); // Stoppe die Schleife, wenn keine Branches mehr existieren
+                p.noLoop();
             }
             if (branches.length > 500) {
                 console.log('Simulation gestoppt: Branch-Limit erreicht.');
@@ -154,15 +152,6 @@
             }
         };
 
-        // Reset the sketch when the mouse is pressed
-        p.mousePressed = () => {
-            // Erstelle einen neuen Branch an der Mausposition
-            let mousePos = p.createVector(p.mouseX, p.mouseY); // Mausposition als Startpunkt
-            let upwardDir = p.createVector(0, -1); // Richtung nach oben (negative Y-Achse)
-            let newBranch = new Branch(null, mousePos, upwardDir, 0); // Neuer Branch mit Generation 0
-
-            branches.push(newBranch); // Füge den neuen Branch zur Liste hinzu
-        };
         p.mousePressed = () => {
             resetSketch();
         };

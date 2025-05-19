@@ -1,47 +1,74 @@
 const canvas = document.getElementById('buschCanvas');
 const ctx = canvas.getContext('2d');
+canvas.width = 700;
+canvas.height = 700;
+ctx.strokeStyle = 'green';
+
 const initialBranchLength = 100;
-const angleVariation = 0.3; // Radian
-const lengthReductionFactor = 0.7;
-let recursionDepth = 0;
-const maxDepth = 10;
+const angleVariation = 0.8;
+const lengthReductionFactor = 0.8;
+const maxDepth = 12;
 
-function drawBranch(startX, startY, length, angle, depth) {
-  if (depth > maxDepth) {
-    return;
+// Jeder Eintrag: {x, y, length, angle, depth}
+let growthQueue = [
+  {
+    x: canvas.width / 2,
+    y: canvas.height,
+    length: initialBranchLength,
+    angle: -Math.PI / 2,
+    depth: 0
   }
+];
 
-  const endX = startX + length * Math.cos(angle);
-  const endY = startY + length * Math.sin(angle);
+function growStep() {
+  // Nimm einen Wachstumspunkt aus der Queue
+  const branch = growthQueue.shift();
+  if (!branch) return false;
+
+  const {x, y, length, angle, depth} = branch;
+  if (depth > maxDepth || length < 2) return true;
+
+  const endX = x + length * Math.cos(angle);
+  const endY = y + length * Math.sin(angle);
 
   ctx.beginPath();
-  ctx.moveTo(startX, startY);
+  ctx.moveTo(x, y);
   ctx.lineTo(endX, endY);
   ctx.stroke();
 
   const newLength = length * lengthReductionFactor;
 
-  // Verzweigung nach links
-  const leftAngle = angle - angleVariation + Math.random() * angleVariation / 2;
-  drawBranch(endX, endY, newLength, leftAngle, depth + 1);
-
-  // Verzweigung nach rechts
+  // Füge neue Wachstumspunkte für die nächsten Verzweigungen hinzu
+  const leftAngle = angle - angleVariation + Math.random() * angleVariation / 4;
   const rightAngle = angle + angleVariation - Math.random() * angleVariation / 2;
-  drawBranch(endX, endY, newLength, rightAngle, depth + 1);
+
+  growthQueue.push({
+    x: endX,
+    y: endY,
+    length: newLength,
+    angle: leftAngle,
+    depth: depth + 1
+  });
+  growthQueue.push({
+    x: endX,
+    y: endY,
+    length: newLength,
+    angle: rightAngle,
+    depth: depth + 1
+  });
+
+  return true;
 }
 
 function animateGrowth() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  recursionDepth++;
-  drawBranch(canvas.width / 2, canvas.height, initialBranchLength, -Math.PI / 2, 0); // Startpunkt unten, wächst nach oben
-
-  if (recursionDepth <= maxDepth) {
+  // Für langsames Wachstum: nur wenige Schritte pro Frame
+  for (let i = 0; i < 12; i++) {
+    if (!growStep()) return;
+  }
+  if (growthQueue.length > 0) {
     requestAnimationFrame(animateGrowth);
   }
 }
 
-// Initialisierung (im HTML muss ein <canvas id="buschCanvas"></canvas> existieren)
-canvas.width = 400;
-canvas.height = 300;
-ctx.strokeStyle = 'green';
+ctx.clearRect(0, 0, canvas.width, canvas.height);
 animateGrowth();
