@@ -18,7 +18,7 @@
                 this.curveOffset = p.random(-initialCurveFactor, initialCurveFactor); // Zufällige anfängliche Kurve
 
                 if (this.generation >= 4) {
-                    this.len = p.random(5, 8); // Begrenzte Länge für grüne Äste
+                    this.len = p.random(4, 5); // Begrenzte Länge für grüne Äste
                     this.strokeW = p.map(this.generation, 4, maxGenerations, 2, 0.5);
                     this.color = [34, 139, 34, 200]; // grün
                     this.dir = p.createVector(0, 1); // Tendenz nach unten für grüne Äste

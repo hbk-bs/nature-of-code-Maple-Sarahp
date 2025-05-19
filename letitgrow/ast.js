@@ -2,10 +2,6 @@ const canvas = document.getElementById('buschCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = 700;
 canvas.height = 700;
-
-ctx.fillStyle = "green";
-ctx.fillRect(100, 100, 100, 100);
-
 const startX = canvas.width / 2;
 const startY = canvas.height;
 const initialLength = 120;
